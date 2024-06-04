@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Assessing Important Plant Areas for Espeletiinae Conservation</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-kmz@latest/dist/leaflet-kmz.js"></script>
+    <style>
+        #map {
+            overflow: hidden;
+            float: left;
+            border: thin solid #333;
+        }
+        .map-header {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .map-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .map-authors {
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .map-attributions {
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="map-header">
+        <div class="map-title">Assessing Important Plant Areas for Espeletiinae Conservation in the Northern Tropical Andes</div>
+        <div class="map-authors">
+            Clara Morales-Rozo<sup>1,2</sup>, Ian S. Acuña-Rodríguez<sup>3</sup>, Juan Benavides<sup>1</sup> & Mauricio Diazgranados<sup>4,5</sup><br><br>
+            <sup>1</sup>Departamento de Ecología y Territorio. Facultad de Estudios Ambientales y Rurales. Pontificia Universidad Javeriana, Bogotá, D.C., Colombia.<br>
+            <sup>2</sup>Subdirección Científica, Jardín Botánico de Bogotá ‘José Celestino Mutis’, Bogotá, D.C., Colombia.<br>
+            <sup>3</sup>Instituto de Investigación Interdisciplinaria (I3) Universidad de Talca, Campus Lircay, Talca, Chile.<br>
+            <sup>4</sup>International Plant Science Center, New York Botanical Garden, New York, NY, USA.<br>
+            <sup>5</sup>Research Department, Royal Botanic Gardens, Kew, Richmond, TW9 3AE, UK.
+        </div>
+        <br>
+
+        <div id="map" style="height: 800px; width: 100%"></div>
+        <div class="map-attributions">
+            Leaflet Arcgis <br>
+            Protected areas source: UNEP-WCMC, & IUCN. (2023, May). Protected Planet: The World Database on Protected Areas (WDPA) and World Database on Other Effective Area-based Conservation Measures (WD-OECM) [Online]. <br>
+            <a href="www.protectedplanet.net ">www.protectedplanet.net</a>
+        </div>
+    </div>
+
+
+    <script type="application/javascript">
+        var map = L.map('map', {
+            preferCanvas: true
+        });
+        map.setView(new L.LatLng(3.75863889, -71.46026667), 6);
+
+        var urlBaseMap = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}';
+        var OpenTopoMap = L.tileLayer(urlBaseMap, {
+            maxZoom: 22,
+            attribution: 'Arcgis'
+        });
+        OpenTopoMap.addTo(map);
+
+        var kmz = L.kmzLayer().addTo(map);
+
+        kmz.on('load', function (e) {
+            var name = e.name.replace('.kmz','');
+            control.addOverlay(e.layer, name);
+        });
+
+        kmz.load("Protected-areas.kmz");
+        kmz.load("Lower-priority.kmz");
+        kmz.load("Medium-priority.kmz");
+        kmz.load("High-priority.kmz");
+        var control = L.control.layers(null, null, {collapsed: true}).addTo(map);
+    </script>
+</body>
+</html>
